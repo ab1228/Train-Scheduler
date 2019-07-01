@@ -1,10 +1,25 @@
-// var trainName = '';
-// var destination = '';
-// var frequency = '';
-// var firstTrain = '';
+var trainName = '';
+var destination = '';
+var frequency = '';
+var firstTrain = '';
+var nextArrival = '';
+
+function hours() {
+    var clock = moment().format('MMMM Do YYYY, HH:mm:ss');
+    $("#clock").text(clock, 1000);
+} setInterval(hours);
 
 
-// Your web app's Firebase configuration
+// Firebase configuration
+var firebaseConfig = {
+    apiKey: "AIzaSyAPK5NLT6wxwD8bNPUqgTBcJq2qCnaRuZ8",
+    authDomain: "trainscheduler-b772e.firebaseapp.com",
+    databaseURL: "https://trainscheduler-b772e.firebaseio.com",
+    projectId: "trainscheduler-b772e",
+    storageBucket: "",
+    messagingSenderId: "437215777931",
+    appId: "1:437215777931:web:6a804c184849a527"
+};
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -26,7 +41,7 @@ $("#submit").on("click", function (event) {
         frequency: frequency,
         firstTrain: firstTrain
     }
-    // // Uploads employee data to the database
+    // // Uploads train data to the database
     database.ref().push(newTrain);
     // Clears all of the text-boxes
     $("#train-name-input").val("");
@@ -36,20 +51,37 @@ $("#submit").on("click", function (event) {
 });
 
 database.ref().on('child_added', function (response) {
-    console.log(response.val().destination)
-    console.log(response.val().trainName)
-    console.log(response.val().frequency)
-    console.log(response.val().firstTrain)
+    var destinationT = (response.val().destination)
+    var trainNameT = (response.val().trainName)
+    var tFrequency = (response.val().frequency)
+    var firstTrain = (response.val().firstTrain)
+
+    ////Train time
+
+    var firstTrainA = moment(firstTrain, "HH:mm").subtract(1, "days");
+    var diffTime = moment().diff(moment(firstTrainA), "minutes");
+    var tRemainder = diffTime % tFrequency;
+    var tMinutesTillTrain = tFrequency - tRemainder;
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+    var nextArrival = moment(nextTrain).format('HH:mm');
     //ES6 Template Literals
     //`train Name:  ${response.val().trainName}`
 
     var tr = `<tr>
-            <td>${response.val().destination}</td>
-            <td>${response.val().trainName}</td>
-            <td>${response.val().frequency}</td>
-            <td>${response.val().trainName}</td>
+            <td>${trainNameT}</td>
+            <td>${destinationT}</td>
+            <td>${tFrequency}</td>
+            <td>${nextArrival}</td>
+            <td>${tMinutesTillTrain}</td>
+            
         </tr>`
 
     $("#info-input").append(tr)
-})
+},
+    function (errorObject) {
+        console.log('Errors handled: ' + errorObject.code);
+    }
+
+
+);
 

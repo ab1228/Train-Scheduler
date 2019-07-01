@@ -1,0 +1,18 @@
+
+
+.jumbotron {
+    background: url("../images/speed2.jpg");
+    background-repeat: no-repeat;
+    height: 320px;  
+    background-size: cover;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+
+}
+.card-header {
+    background-color: #007BFF;
+    color: white;
+}
+body {
+    background-color: #C0C0C0;
+}
